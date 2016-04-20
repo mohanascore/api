@@ -1,0 +1,115 @@
+<div class="mdl-layout__header-row">
+
+    <!-- Title -->
+    <span class="mdl-layout-title"><strong>FILE MANAGER</strong></span>
+    <div class="header-separator"></div>
+
+    <!-- breadcrumbs -->
+    <md-menu ng-if="isRoot" ng-controller="FolderModalController">
+        <md-button aria-label="" ng-click="$mdOpenMenu($event)">
+            Min enhet
+            <i class="material-icons">arrow_drop_down</i>
+        </md-button>
+        <md-menu-content width="4">
+            <md-menu-item>
+                <md-button ng-click="open()"><md-icon md-menu-align-target>create_new_folder</md-icon>Mapp</md-button>
+            </md-menu-item>
+            <md-menu-divider></md-menu-divider>
+            <md-menu-item>
+                <md-button ng-click="upload.open($event)"><md-icon md-menu-align-target>file_upload</md-icon>Ladda upp filer</md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button ng-click="ctrl.redial($event)"><md-icon md-menu-align-target>file_upload</md-icon>Hämtningsmapp</md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+
+    <nav ng-if="isFolder" class="mdl-navigation" ng-repeat="(key, value) in breadcrumbs">
+        <i ng-if="key" class="material-icons">keyboard_arrow_right</i>
+
+        <md-button ng-if="key+1!=breadcrumbs.length" ng-click="goto(value.id)">
+            {{value.name}}
+        </md-button>
+
+        <!-- Drop down menu for last item -->
+        <md-menu ng-if="key+1==breadcrumbs.length" ng-controller="FolderModalController">
+            <md-button aria-label="" ng-click="$mdOpenMenu($event)">
+                {{value.name}}
+                <i class="material-icons">arrow_drop_down</i>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item>
+                    <md-button ng-click="open()"><md-icon md-menu-align-target>create_new_folder</md-icon>Mapp</md-button>
+                </md-menu-item>
+                <md-menu-divider></md-menu-divider>
+                <md-menu-item>
+                    <md-button ng-click="upload.open($event)"><md-icon md-menu-align-target>file_upload</md-icon>Ladda upp filer</md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="ctrl.redial($event)"><md-icon md-menu-align-target>file_upload</md-icon>Hämtningsmapp</md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+    </nav>
+
+    <nav ng-if="isTrash" class="mdl-navigation">
+        <i ng-if="key" class="material-icons">keyboard_arrow_right</i>
+        <md-button>Trash</md-button>
+    </nav>
+
+    <div class="mdl-layout-spacer"></div>
+
+    <!-- Navigation -->
+    <nav class="mdl-navigation">
+        <button ng-click="link.open($event)" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">link</i>
+        </button>
+        <button ng-click="permissions.open($event)" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">person_add</i>
+        </button>
+        <button ng-click="delete($event)" class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+            <i class="material-icons">delete</i>
+        </button>
+
+        <md-menu ng-if="$root.selected.folder">
+            <md-button ng-click="$mdOpenMenu($event)"><md-icon md-menu-align-target>more_vert</md-icon></md-button>
+            <md-menu-content width="4">
+                <md-menu-item><md-button ng-click="info($event)"><md-icon md-menu-align-target>info</md-icon>Informationen</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="versions($event)"><md-icon md-menu-align-target>swap_vert</md-icon>Versioner</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="link.open($event)"><md-icon md-menu-align-target>link</md-icon>Hämta Länk</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.copy($event)"><md-icon md-menu-align-target>content_copy</md-icon>Kopiera</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.open($event)"><md-icon md-menu-align-target>move_to_inbox</md-icon>Flytta till</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="rename.open($event)"><md-icon md-menu-align-target>mode_edit</md-icon>Byt namn</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="download($event)"><md-icon md-menu-align-target>file_download</md-icon>Hämta</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="delete($event)"><md-icon md-menu-align-target>delete</md-icon>Ta bort</md-button></md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+        <md-menu ng-if="$root.selected.parent">
+            <md-button ng-click="$mdOpenMenu($event)"><md-icon md-menu-align-target>more_vert</md-icon></md-button>
+            <md-menu-content >
+                <md-menu-item><md-button ng-click="create.open($event)"><md-icon md-menu-align-target>create_new_folder</md-icon>Ny Mapp</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="info($event)"><md-icon md-menu-align-target>info</md-icon>Informationen</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="link.open($event)"><md-icon md-menu-align-target>link</md-icon>Hämta Länk</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.open($event)"><md-icon md-menu-align-target>move_to_inbox</md-icon>Flytta Till</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="rename.open($event)"><md-icon md-menu-align-target>mode_edit</md-icon>Byt namn</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="delete($event)"><md-icon md-menu-align-target>delete</md-icon>Ta bort</md-button></md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+        <md-menu ng-if="!$root.selected.folder && !$root.selected.parent">
+            <md-button ng-click="$mdOpenMenu($event)"><md-icon md-menu-align-target>more_vert</md-icon></md-button>
+            <md-menu-content width="4"></md-menu-content>
+        </md-menu>
+
+    </nav>
+
+    <div class="vertical-separator"></div>
+
+    <!-- Logout -->
+    <button class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+        <i class="material-icons" ng-click="logout()">info_outline</i>
+    </button>
+
+</div>

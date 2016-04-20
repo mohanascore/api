@@ -1,0 +1,27 @@
+<md-dialog aria-label="" style="width:60%;">
+    <form>
+
+        <md-toolbar >
+            <div class="md-toolbar-tools">
+                <h1>öppna med</h1>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon aria-label="Close dialog">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <ul>
+                <li ng-repeat="app in $root.selected.apps">
+                    <a href="{{app.openUrlTemplate}}">{{app.name}}</a>
+                </li>
+            </ul>
+
+            <p ng-if="!$root.selected.apps.length">No available apps</p>
+
+        </md-dialog-content>
+
+    </form>
+</md-dialog>

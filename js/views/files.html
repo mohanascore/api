@@ -1,0 +1,166 @@
+<!-- Tree -->
+<div id="left">
+
+    <md-menu ng-controller="FolderModalController">
+        <md-button aria-label="Skapa" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" ng-click="$mdOpenMenu($event)">
+            SKAPA
+        </md-button>
+        <md-menu-content width="4">
+            <md-menu-item>
+                <md-button ng-click="open()"><md-icon md-menu-align-target>create_new_folder</md-icon>Ny mapp</md-button>
+            </md-menu-item>
+            <md-menu-divider></md-menu-divider>
+            <md-menu-item>
+                <md-button ng-click="upload.open($event)"><md-icon md-menu-align-target>file_upload</md-icon>Ladda upp filer</md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button><md-icon md-menu-align-target>file_upload</md-icon>Hämtningsmapp</md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+
+    <!-- folders tree -->
+    <nav class="mdl-navigation" style="min-height: 200px; overflow-y: scroll; margin-top: 10px; max-height: 400px;">
+        <ul folders-tree class="root" tree="{{tree}}"></ul>
+    </nav>
+
+    <hr style="margin-right: 10px;"/>
+
+    <!-- quota -->
+
+    <span ng-if="quotaUsed">
+        Used - {{quotaUsed}} from {{quotaTotal}}
+    </span>
+
+    <!-- trash link -->
+    <nav class="mdl-navigation" style="margin-left: 20px;">
+        <ul class="root">
+            <li>
+                <a class="mdl-navigation__link">
+                    <span class="mdl-button mdl-js-button mdl-button--icon" data-upgraded=",MaterialButton">
+                        <i class="material-icons" ng-click="goto('trash');">delete</i>
+                    </span>papperskorgen
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<!-- Folders & files list -->
+<section id="right" ng-controller="FilesController" ng-click="hidepopups();">
+
+    <md-progress-linear md-mode="indeterminate" ng-class="{'hidden' : loaded}"></md-progress-linear>
+
+    <div class="tableheader">
+        <div class="mdl-grid">
+
+            <!-- Name field -->
+            <div ng-if="order=='name'" class="mdl-cell mdl-cell--6-col" style="font-weight: bold;">
+                Namn<i class="material-icons" style="font-size: 14pt;" ng-click="sortName();">arrow_downward</i>
+            </div>
+
+            <div ng-if="order=='-name'" class="mdl-cell mdl-cell--6-col" style="font-weight: bold;">
+                Namn<i class="material-icons" style="font-size: 14pt;" ng-click="sortName();">arrow_upward</i>
+            </div>
+
+            <div ng-if="order!='name' && order!='-name'" class="mdl-cell mdl-cell--6-col">
+                Namn<i class="material-icons" style="font-size: 14pt;" ng-click="sortName();">arrow_downward</i>
+            </div>
+
+            <div class="mdl-cell mdl-cell--2-col">Ägare</div>
+
+            <!-- update date field  -->
+            <div ng-if="order=='-_updateDate'" class="mdl-cell mdl-cell--2-col" style="font-weight: bold;">
+                Senast ändrad<i class="material-icons" style="font-size: 14pt;" ng-click="sortUpdated();">arrow_downward</i>
+            </div>
+            <div ng-if="order=='_updateDate'" class="mdl-cell mdl-cell--2-col" style="font-weight: bold;">
+                Senast ändrad<i class="material-icons" style="font-size: 14pt;" ng-click="sortUpdated();">arrow_upward</i>
+            </div>
+            <div ng-if="order!='-_updateDate' && order!='_updateDate'" class="mdl-cell mdl-cell--2-col">
+                Senast ändrad<i class="material-icons" style="font-size: 14pt;" ng-click="sortUpdated();">arrow_downward</i>
+            </div>
+
+            <div class="mdl-cell mdl-cell--2-col">Filstorlek</div>
+        </div>
+    </div>
+
+    <div class="tablerow">
+
+        <!-- folders -->
+        <div ng-controller="ContextController"
+             ng-repeat="folder in folders | orderBy:order"
+             ng-click="select($event,folder)"
+             ng-dblClick="goto(folder.id)"
+             ng-class="{'selected' : folder.selected}"
+             ng-right-click="contextMenu($event,folder)"
+             class="mdl-grid"
+             id="{{folder.id}}">
+
+            <div class="mdl-cell mdl-cell--6-col">
+                <img ng-click="goto(folder.id)" ng-src="{{folder.iconLink}}" />
+                <span>{{folder.name}}</span></div>
+            <div class="mdl-cell mdl-cell--2-col">{{folder.owner}}</div>
+            <div class="mdl-cell mdl-cell--2-col">{{folder.updateDate}}</div>
+            <div class="mdl-cell mdl-cell--2-col">{{folder.size}}</div>
+            <md-menu-content ng-if="!isTrash" class="context" style="display: none;">
+                <md-menu-item><md-button ng-click="create.open($event)"><md-icon md-menu-align-target>create_new_folder</md-icon>Ny Mapp</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="info($event, folder)"><md-icon md-menu-align-target>info</md-icon>Informationen</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="link.open($event)"><md-icon md-menu-align-target>link</md-icon>Hämta Länk</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.open(folder,$event)"><md-icon md-menu-align-target>move_to_inbox</md-icon>Flytta Till</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="rename.open($event)"><md-icon md-menu-align-target>mode_edit</md-icon>Byt namn</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="delete($event)"><md-icon md-menu-align-target>delete</md-icon>Ta bort</md-button></md-menu-item>
+            </md-menu-content>
+
+            <md-menu-content ng-if="isTrash" class="context" style="display: none;">
+                <md-menu-item><md-button ng-click="untrash($event,folder)"><md-icon md-menu-align-target>restore</md-icon>återställa</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="deleteFromTrash($event, folder)"><md-icon md-menu-align-target>delete</md-icon>radera</md-button></md-menu-item>
+            </md-menu-content>
+        </div>
+
+        <!-- files -->
+        <div ng-controller="ContextController"
+             ng-repeat="file in files | orderBy:order"
+             ng-click="select($event,file)"
+             ng-class="{'selected' : file.selected}"
+             ng-right-click="contextMenu($event,file)"
+             class="mdl-grid"
+             id="{{file.id}}" >
+
+            <div class="mdl-cell mdl-cell--6-col">
+                <img  ng-src="{{file.iconLink}}"  />
+                <span >{{file.name}}</span>
+            </div>
+            <div class="mdl-cell mdl-cell--2-col">{{file.owner}}</div>
+            <div class="mdl-cell mdl-cell--2-col">{{file.updateDate}}</div>
+            <div class="mdl-cell mdl-cell--2-col">{{file.size}}</div>
+
+            <md-menu-content ng-if="!isTrash" class="context" style="display: none; overflow: visible; height: auto; max-height: 100%; overflow-y: auto;">
+
+                <md-menu-item><md-button ng-click="openwith.open($event, file)"><md-icon md-menu-align-target>visibility</md-icon>Open with</md-button></md-menu-item>
+
+                <md-menu-item><md-button ng-click="preview($event, file)"><md-icon md-menu-align-target>visibility</md-icon>Förhandsvisning</md-button></md-menu-item>
+                <hr>
+                <md-menu-item><md-button ng-click="permissions.open($event, file)"><md-icon md-menu-align-target>person_add</md-icon>Dela...</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="link.open($event)"><md-icon md-menu-align-target>link</md-icon>Hämta Länk</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.open(file,$event)"><md-icon md-menu-align-target>move_to_inbox</md-icon>Flytta till</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="rename.open($event)"><md-icon md-menu-align-target>mode_edit</md-icon>Byt namn</md-button></md-menu-item>
+                <hr/>
+                <md-menu-item><md-button ng-click="info($event, file)"><md-icon md-menu-align-target>info</md-icon>Visa detaljer</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="versions($event, file)"><md-icon md-menu-align-target>restore</md-icon>Hantera versioner</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="move.copy(file)"><md-icon md-menu-align-target>content_copy</md-icon>Kopiera</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="download($event)"><md-icon md-menu-align-target>file_download</md-icon>Hämta</md-button></md-menu-item>
+                <hr/>
+                <md-menu-item><md-button ng-click="delete($event)"><md-icon md-menu-align-target>delete</md-icon>Ta bort</md-button></md-menu-item>
+            </md-menu-content>
+
+            <md-menu-content ng-if="isTrash" class="context" style="display: none; overflow: visible; height: auto; max-height: 100%; overflow-y: auto;">
+                <md-menu-item><md-button ng-click="untrash($event, file)"><md-icon md-menu-align-target>restore</md-icon>återställa</md-button></md-menu-item>
+                <md-menu-item><md-button ng-click="deleteFromTrash($event, file)"><md-icon md-menu-align-target>delete</md-icon>radera</md-button></md-menu-item>
+            </md-menu-content>
+
+        </div>
+
+    </div>
+
+</section>

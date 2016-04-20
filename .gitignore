@@ -1,0 +1,4 @@
+bower_components
+js/config/config.js
+.idea
+npm-debug*

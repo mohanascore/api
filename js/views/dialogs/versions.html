@@ -1,0 +1,34 @@
+<md-dialog aria-label="">
+    <form>
+
+        <md-toolbar >
+            <div class="md-toolbar-tools">
+                <h1>Versioner</h1>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon aria-label="Close dialog">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <table cellpadding="5">
+                <thead>
+                    <th>Original file name</th>
+                    <th>Modified date</th>
+                    <th>Download url</th>
+                    <th>Last modifying user</th>
+                </thead>
+                <tr ng-repeat="revision in $root.revisions">
+                    <td>{{revision.originalFilename}}</td>
+                    <td>{{revision.modifiedDate}}</td>
+                    <td><a href="{{revision.downloadUrl}}"><md-icon md-menu-align-target>file_download</md-icon></a></td>
+                    <td>{{revision.lastModifyingUser.displayName}}</td>
+                </tr>
+            </table>
+
+        </md-dialog-content>
+
+    </form>
+</md-dialog>

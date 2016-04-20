@@ -1,0 +1,42 @@
+<md-dialog aria-label="" style="width:60%;">
+    <form>
+
+        <md-toolbar >
+            <div class="md-toolbar-tools">
+                <h1>Informationen</h1>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon aria-label="Close dialog">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>{{$root.selected.name}}</td>
+                </tr>
+                <tr>
+                    <td>Owner</td>
+                    <td>{{$root.selected.owner}}</td>
+                </tr>
+                <tr>
+                    <td>Update date</td>
+                    <td>{{$root.selected.updateDate}}</td>
+                </tr>
+                <tr>
+                    <td>Link</td>
+                    <td>{{$root.selected.link}}</td>
+                </tr>
+                <tr>
+                    <td>Version</td>
+                    <td>{{$root.selected.version}}</td>
+                </tr>
+            </table>
+
+        </md-dialog-content>
+
+    </form>
+</md-dialog>

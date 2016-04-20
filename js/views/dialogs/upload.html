@@ -1,0 +1,32 @@
+<md-dialog aria-label="Mango (Fruit)">
+
+    <form>
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h1>Ladda upp</h1>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close($event)">
+                    <md-icon aria-label="Close dialog">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+                <md-input-container class="md-block">
+                    <label></label>
+                    <input id="file" ng-model="$root.uploadfile" type="file">
+                    <md-progress-linear md-mode="indeterminate" ng-class="{'hidden' : $root.uploaded}"></md-progress-linear><br/>
+                </md-input-container>
+
+                <md-dialog-actions layout="row" >
+                    <span flex></span>
+                    <md-button md-autofocus ng-click="upload.upload($event)">Ladda upp</md-button>
+                </md-dialog-actions>
+
+        </md-dialog-content>
+
+    </form>
+
+</md-dialog>
